@@ -1,4 +1,4 @@
-<%@ page import="com.spring.mvc.models.User" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
   <head>
@@ -42,6 +42,7 @@
               <% } else{%>
               <li ><a href="/user">View</a></li>
               <li><a href="#">Search</a></li>
+              <li><a href="/user/view/<%=session.getAttribute("logged").toString() %>">My Profile</a></li>
               <li><a href="/user/logout">Logout</a></li>
               <%}%>
           </ul>
@@ -53,6 +54,7 @@
       <% } else{%>
       <li ><a href="/user">View</a></li>
       <li><a href="#">Search</a></li>
+      <li><a href="/user/view/<%=session.getAttribute("logged").toString() %>">My Profile</a></li>
       <li><a href="/user/logout">Logout</a></li>
       <%}%>
   </ul>
@@ -61,22 +63,24 @@
           <div class="col s6 offset-s3 valign">
               <div class="card large" style="height: auto;margin-top: 50px;">
                   <div class="card-content" style="max-height: initial;padding: 10px 30px;">
+                      <% if(session.getAttribute("logged")==null) {%>
                       <blockquote><h4 class="font_01 h1 valign-wrapper"><i class="medium material-icons">person_pin</i>&nbsp;&nbsp;Login</h4>
                       </blockquote>
                       <div class="row">
                           <form class="col s12" action="/user/login" name="login" method="post" >
+                            <c:if test="${credentials == 'invalid'}">
+                              <span class="red-text">Invalid credentials !</span>
+                            </c:if>
                               <div class="row input-row">
                                   <div class="input-field col s12">
-                                      <input id="email" type="email" class="validate" name="email">
+                                      <input id="email" type="email" class="validate ${credentials.toString()}" name="email">
                                       <label for="email">Email</label>
-                                      <span class="helper-text" data-error="Invalid email address"></span>
                                   </div>
                               </div>
                               <div class="row input-row">
                                   <div class="input-field col s12">
-                                      <input id="password" type="password" class="validate" name="password">
+                                      <input id="password" type="password" class="validate ${credentials.toString()}" name="password">
                                       <label for="password">Password</label>
-                                      <span class="helper-text" data-error="Wrong password"></span>
                                   </div>
                               </div>
                               <div class="row input-row">
@@ -84,6 +88,10 @@
                               </div>
                           </form>
                       </div>
+                      <%} else {%>
+                      <blockquote><h5 class="font_01 h1 valign-wrapper"><i class="medium material-icons">person_pin</i>&nbsp;&nbsp;You Already logged in !</h5>
+                      </blockquote>
+                      <%}%>
                   </div>
               </div>
           </div>

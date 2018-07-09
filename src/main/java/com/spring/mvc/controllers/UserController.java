@@ -74,12 +74,12 @@ public class UserController {
         User user = userService.login(login.getEmail(),login.getPassword());
         if(user!=null){
             model.addAttribute("user",user);
-            session.setAttribute("logged",user);
-            System.out.println("Credentials okay");
+            session.setAttribute("logged",user.getId());
             return "user/profile";
         }
         else{
-            model.addAttribute("logged",null);
+            session.setAttribute("logged",null);
+            model.addAttribute("credentials","invalid");
             return "welcome";
         }
     }

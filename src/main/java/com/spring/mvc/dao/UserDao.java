@@ -70,7 +70,7 @@ public class UserDao {
     public User validateUser(String email,String password){
         String sql = "SELECT * FROM users WHERE email = '"+email+"'";
         List<User> list=namedParameterJdbcTemplate.query(sql,new UserMapper());
-        if(list!=null && bCryptPasswordEncoder.matches(password,list.get(0).getPassword())){
+        if(list.size()>0 && bCryptPasswordEncoder.matches(password,list.get(0).getPassword())){
             return list.get(0);
         }else {
             return null;

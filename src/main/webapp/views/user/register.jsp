@@ -40,17 +40,26 @@
         <a href="/" class="brand-logo"><img src="https://cdn2.iconfinder.com/data/icons/seo-flat-6/128/38_Target_Audience-64.png"></a>
         <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         <ul class="right hide-on-med-and-down">
+            <% if(session.getAttribute("logged")==null) {%>
+            <li ><a href="/register">Register</a></li>
+            <% } else{%>
             <li ><a href="/user">View</a></li>
             <li><a href="#">Search</a></li>
-            <li class="active"><a href="/register">Register</a></li>
+            <li><a href="/user/view/<%=session.getAttribute("logged").toString() %>">My Profile</a></li>
+            <li><a href="/user/logout">Logout</a></li>
+            <%}%>
         </ul>
     </div>
 </nav>
-
 <ul class="sidenav" id="mobile-nav">
-    <li><a href="/user">View</a></li>
+    <% if(session.getAttribute("logged")==null) {%>
+    <li ><a href="/register">Register</a></li>
+    <% } else{%>
+    <li ><a href="/user">View</a></li>
     <li><a href="#">Search</a></li>
-    <li><a href="/register">Register</a></li>
+    <li><a href="/user/view/<%=session.getAttribute("logged").toString() %>">My Profile</a></li>
+    <li><a href="/user/logout">Logout</a></li>
+    <%}%>
 </ul>
 
 <div class="container">
@@ -58,6 +67,7 @@
         <div class="col s6 offset-s3 valign">
             <div class="card large" style="height: auto;">
                 <div class="card-content" style="max-height: initial;">
+                    <% if(session.getAttribute("logged")==null) {%>
                     <blockquote><h4 class="font_01 h1 valign-wrapper"><i class="medium material-icons">person_pin</i>&nbsp;&nbsp;Register</h4>
                     </blockquote>
                     <div class="row">
@@ -103,6 +113,10 @@
 
                         </form>
                     </div>
+                    <%} else {%>
+                    <blockquote><h5 class="font_01 h1 valign-wrapper"><i class="medium material-icons">person_pin</i>&nbsp;&nbsp;You Already logged in !</h5>
+                    </blockquote>
+                    <%}%>
                 </div>
             </div>
         </div>

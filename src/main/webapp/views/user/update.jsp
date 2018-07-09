@@ -40,21 +40,27 @@
         <a href="/" class="brand-logo"><img src="https://cdn2.iconfinder.com/data/icons/seo-flat-6/128/38_Target_Audience-64.png"></a>
         <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         <ul class="right hide-on-med-and-down">
+            <% if(session.getAttribute("logged")==null) {%>
+            <li ><a href="/register">Register</a></li>
+            <% } else{%>
             <li ><a href="/user">View</a></li>
             <li><a href="#">Search</a></li>
-            <li><a href="#">Login</a></li>
-            <li><a href="/register">Register</a></li>
+            <li><a href="/user/view/<%=session.getAttribute("logged").toString() %>">My Profile</a></li>
+            <li><a href="/user/logout">Logout</a></li>
+            <%}%>
         </ul>
     </div>
 </nav>
-
 <ul class="sidenav" id="mobile-nav">
-    <li><a href="/user">View</a></li>
+    <% if(session.getAttribute("logged")==null) {%>
+    <li ><a href="/register">Register</a></li>
+    <% } else{%>
+    <li ><a href="/user">View</a></li>
     <li><a href="#">Search</a></li>
-    <li><a href="#">Login</a></li>
-    <li><a href="/register">Register</a></li>
+    <li><a href="/user/view/<%=session.getAttribute("logged").toString() %>">My Profile</a></li>
+    <li><a href="/user/logout">Logout</a></li>
+    <%}%>
 </ul>
-
 <div class="container">
     <div class="row">
         <div class="col s6 offset-s3 valign">
