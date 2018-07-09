@@ -50,7 +50,7 @@ public class UserController {
 
     @PostMapping("/update")
     public String update(@ModelAttribute User user, Model model) {
-        String password = userService.find(Integer.parseInt(session.getAttribute("logged").toString())).getPassword();
+        String password = ((User)userService.find(Integer.parseInt(session.getAttribute("logged").toString()))).getPassword();
         if(!bCryptPasswordEncoder.matches(user.getPassword(),password)){
             model.addAttribute("user", user);
             model.addAttribute("password","invalid");
