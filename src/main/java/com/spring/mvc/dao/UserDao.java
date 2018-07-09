@@ -53,7 +53,7 @@ public class UserDao {
     }
 
     public int updateUser(User u){
-        String sql = "UPDATE users SET firstname = :firstname, lastname = :lastname, address = :address, email= :email WHERE id = :id";
+        String sql = "UPDATE users SET firstname = :firstname, lastname = :lastname, address = :address WHERE id = :id";
         return namedParameterJdbcTemplate.update(sql,getSqlParameterByModel(u));
     }
 
@@ -75,6 +75,12 @@ public class UserDao {
         }else {
             return null;
         }
+    }
+
+    public List<User> searchUser(String searchQuery){
+        String sql = "SELECT * FROM users WHERE firstname LIKE '"+searchQuery+"%'";
+        List<User> users=namedParameterJdbcTemplate.query(sql,new UserMapper());
+        return users;
     }
 }
 

@@ -41,10 +41,10 @@
         <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         <ul class="right hide-on-med-and-down">
             <% if(session.getAttribute("logged")==null) {%>
-            <li ><a href="/register">Register</a></li>
+            <li class="active"><a href="/register">Register</a></li>
             <% } else{%>
             <li ><a href="/user">View</a></li>
-            <li><a href="#">Search</a></li>
+            <li><a href="/search">Search</a></li>
             <li><a href="/user/view/<%=session.getAttribute("logged").toString() %>">My Profile</a></li>
             <li><a href="/user/logout">Logout</a></li>
             <%}%>
@@ -53,10 +53,10 @@
 </nav>
 <ul class="sidenav" id="mobile-nav">
     <% if(session.getAttribute("logged")==null) {%>
-    <li ><a href="/register">Register</a></li>
+    <li class="active"><a href="/register">Register</a></li>
     <% } else{%>
     <li ><a href="/user">View</a></li>
-    <li><a href="#">Search</a></li>
+    <li ><a href="/search">Search</a></li>
     <li><a href="/user/view/<%=session.getAttribute("logged").toString() %>">My Profile</a></li>
     <li><a href="/user/logout">Logout</a></li>
     <%}%>
@@ -168,7 +168,6 @@
                 $("#password").addClass("invalid");
             }
         }
-
     }
 </script>
 </body>

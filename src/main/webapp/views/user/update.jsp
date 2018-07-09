@@ -1,4 +1,4 @@
-<%--
+<%@ page import="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" %><%--
   Created by IntelliJ IDEA.
   User: Thilina Prasad
   Date: 7/6/2018
@@ -44,7 +44,7 @@
             <li ><a href="/register">Register</a></li>
             <% } else{%>
             <li ><a href="/user">View</a></li>
-            <li><a href="#">Search</a></li>
+            <li ><a href="/search">Search</a></li>
             <li><a href="/user/view/<%=session.getAttribute("logged").toString() %>">My Profile</a></li>
             <li><a href="/user/logout">Logout</a></li>
             <%}%>
@@ -56,7 +56,7 @@
     <li ><a href="/register">Register</a></li>
     <% } else{%>
     <li ><a href="/user">View</a></li>
-    <li><a href="#">Search</a></li>
+    <li ><a href="/search">Search</a></li>
     <li><a href="/user/view/<%=session.getAttribute("logged").toString() %>">My Profile</a></li>
     <li><a href="/user/logout">Logout</a></li>
     <%}%>
@@ -83,7 +83,7 @@
                             </div>
                             <div class="row input-row">
                                 <div class="input-field col s12">
-                                    <input id="email" type="email" class="validate" name="email" value="${user.email}">
+                                    <input id="email" type="email" class="validate" name="email" value="${user.email}" readonly>
                                     <label for="email">Email</label>
                                 </div>
                             </div>
@@ -95,8 +95,9 @@
                             </div>
                             <div class="row input-row">
                                 <div class="input-field col s12">
-                                    <input id="password" type="password" class="validate" name="password">
+                                    <input id="password" type="password" class="validate ${password.toString()}" name="password">
                                     <label for="password">Password</label>
+                                    <span class="helper-text" data-error="Invalid password"></span>
                                 </div>
                             </div>
                             <div class="row input-row">
@@ -118,6 +119,18 @@
     $(document).ready(function () {
         $(".sidenav").sidenav();
     });
+
+    if(${success}) {
+        $.alert({
+            theme: 'modern',
+            boxWidth: '500px',
+            useBootstrap: false,
+            title: 'Success!',
+            icon: "far fa-check-circle",
+            type: 'green',
+            content: 'User data successfully updated!',
+        });
+    }
 </script>
 </body>
 </html>

@@ -277,8 +277,8 @@
             <li ><a href="/register">Register</a></li>
             <% } else{%>
             <li ><a href="/user">View</a></li>
-            <li><a href="#">Search</a></li>
-            <li><a href="/user/view/<%=session.getAttribute("logged").toString() %>">My Profile</a></li>
+            <li ><a href="/search">Search</a></li>
+            <li class="active"><a href="/user/view/<%=session.getAttribute("logged").toString() %>">My Profile</a></li>
             <li><a href="/user/logout">Logout</a></li>
             <%}%>
         </ul>
@@ -289,8 +289,8 @@
     <li ><a href="/register">Register</a></li>
     <% } else{%>
     <li ><a href="/user">View</a></li>
-    <li><a href="#">Search</a></li>
-    <li><a href="/user/view/<%=session.getAttribute("logged").toString() %>">My Profile</a></li>
+    <li><a href="/search">Search</a></li>
+    <li class="active"><a href="/user/view/<%=session.getAttribute("logged").toString() %>">My Profile</a></li>
     <li><a href="/user/logout">Logout</a></li>
     <%}%>
 </ul>

@@ -10,7 +10,6 @@
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
       <link href="https://fonts.googleapis.com/css?family=Titillium+Web" rel="stylesheet">
       <link rel="shortcut icon" type="image/png" href="https://cdn2.iconfinder.com/data/icons/seo-flat-6/128/38_Target_Audience-32.png" />
-
       <style>
           .user-img{
               width: 500px;
@@ -41,7 +40,7 @@
               <li ><a href="/register">Register</a></li>
               <% } else{%>
               <li ><a href="/user">View</a></li>
-              <li><a href="#">Search</a></li>
+              <li><a href="/search">Search</a></li>
               <li><a href="/user/view/<%=session.getAttribute("logged").toString() %>">My Profile</a></li>
               <li><a href="/user/logout">Logout</a></li>
               <%}%>
@@ -53,7 +52,7 @@
       <li ><a href="/register">Register</a></li>
       <% } else{%>
       <li ><a href="/user">View</a></li>
-      <li><a href="#">Search</a></li>
+      <li><a href="/search">Search</a></li>
       <li><a href="/user/view/<%=session.getAttribute("logged").toString() %>">My Profile</a></li>
       <li><a href="/user/logout">Logout</a></li>
       <%}%>
@@ -75,12 +74,14 @@
                                   <div class="input-field col s12">
                                       <input id="email" type="email" class="validate ${credentials.toString()}" name="email">
                                       <label for="email">Email</label>
+                                      <span class="helper-text" data-error="Invalid email address !"></span>
                                   </div>
                               </div>
                               <div class="row input-row">
                                   <div class="input-field col s12">
                                       <input id="password" type="password" class="validate ${credentials.toString()}" name="password">
                                       <label for="password">Password</label>
+                                      <span class="helper-text" data-error="Invalid password !"></span>
                                   </div>
                               </div>
                               <div class="row input-row">

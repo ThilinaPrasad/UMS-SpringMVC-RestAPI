@@ -39,4 +39,8 @@ public class UserService {
     public User login(String email,String password){
        return userDao.validateUser(email,password);
     }
+
+    public List<User> searchUsers(String searchQuery){
+        return userDao.searchUser(searchQuery);
+    }
 }
