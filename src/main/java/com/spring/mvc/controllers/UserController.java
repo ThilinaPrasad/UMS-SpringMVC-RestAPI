@@ -76,7 +76,6 @@ public class UserController {
     @GetMapping("")
     public String viewAll(Model model) {
         if (session.getAttribute("logged") != null) {
-
             model.addAttribute("users", (List<User>) userService.listAllUsers());
             return "user/index";
         } else {
@@ -114,11 +113,11 @@ public class UserController {
         return "welcome";
     }
 
-    @GetMapping("search/{searchQuery}")
+    @GetMapping("search")
     @ResponseBody
-    public String search(@PathVariable String searchQuery) {
+    public String search(@RequestParam String search_query) {
         JSONArray jsonArray = new JSONArray();
-        List<User> users = userService.searchUsers(searchQuery);
+        List<User> users = userService.searchUsers(search_query);
         for (User user : users) {
             JSONObject json = new JSONObject();
             json.put("id", user.getId());

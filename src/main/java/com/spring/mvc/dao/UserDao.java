@@ -48,7 +48,7 @@ public class UserDao {
     public int addUser(User u){
         String sql = "INSERT INTO users(firstname, lastname, address,email,password) VALUES(:firstname, :lastname, :address, :email,:password)";
         u.setPassword(bCryptPasswordEncoder.encode(u.getPassword()));
-        System.out.println(u.getPassword());
+        //System.out.println(u.getPassword());
         return namedParameterJdbcTemplate.update(sql,getSqlParameterByModel(u));
     }
 

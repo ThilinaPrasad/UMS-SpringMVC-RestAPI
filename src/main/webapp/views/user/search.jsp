@@ -144,7 +144,7 @@
     }
 
     function searchUser(searchQuery) {
-        $.get("/user/search/"+searchQuery, function(data, status){
+        $.get("/user/search?search_query="+searchQuery, function(data, status){
             var results = JSON.parse(data);
             var resultTable = "";
             if(results.length>0){
