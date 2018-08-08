@@ -1,23 +1,21 @@
 package com.spring.mvc.controllers;
 
-import com.mysql.cj.Session;
-import com.spring.mvc.models.Login;
 import com.spring.mvc.models.User;
 import com.spring.mvc.services.UserService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
-import java.util.Arrays;
 import java.util.List;
 
 
 @Controller
+@CrossOrigin
 @RequestMapping(value = "user")
 public class UserController {
 
@@ -30,104 +28,142 @@ public class UserController {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @PostMapping("")
-    public String store(@ModelAttribute User user, Model model) {
-        userService.addUser(user);
-        model.addAttribute("user", user);
-        session.setAttribute("logged", user);
-        return "user/profile";
+    @GetMapping("test")
+    public void test(){
+        System.out.println("Test called");
     }
 
-    @GetMapping("edit/{id}")
-    public String edit(Model model, @PathVariable int id) {
-        if (session.getAttribute("logged") != null) {
-            model.addAttribute("user", userService.find(id));
-            return "user/update";
+    @ResponseBody
+    @PutMapping("/update/{id}")
+    public String update(@RequestBody String user, @PathVariable int id) {
+        JSONObject userData = new JSONObject(user);
+        User u = jsonToUser(userData);
+        u.setId(userData.getInt("id"));
+        String password = ((User) userService.find(u.getId())).getPassword();
+        System.out.println(u.getId());
+        if (!bCryptPasswordEncoder.matches(u.getPassword(), password)) {
+            userData.put("status",false);
         } else {
-            return "welcome";
+            userService.updateUser(u);
+            userData.put("status",true);
         }
+        return userData.toString();
     }
 
-    @PostMapping("/update")
-    public String update(@ModelAttribute User user, Model model) {
-        String password = ((User)userService.find(Integer.parseInt(session.getAttribute("logged").toString()))).getPassword();
-        if(!bCryptPasswordEncoder.matches(user.getPassword(),password)){
-            model.addAttribute("user", user);
-            model.addAttribute("password","invalid");
-            return "user/update";
-        }else {
-            userService.updateUser(user);
-            model.addAttribute(user);
-            model.addAttribute("success","true");
-            return "user/update";
+    @PostMapping("/create")
+    @ResponseBody
+    public String create(@RequestBody String data) {
+        JSONObject json = new JSONObject();
+        User user = jsonToUser(new JSONObject(data));
+        User response = userService.addUser(user);
+        if (response.getEmail().equals("available")) {
+            json.put("id", "available");
+        } else {
+            if (response != null) {
+                session.setAttribute("logged", response.getId());
+                json = objectToJson(response);
+            } else {
+                json.put("id", "none");
+            }
         }
+        return json.toString();
     }
 
-    @GetMapping("/{id}")
+    @DeleteMapping("/{id}")
     @ResponseBody
     public String delete(@PathVariable int id) {
+        JSONObject json = new JSONObject();
         if (userService.deleteUser(id) == 1) {
-            return "success";
+            json.put("status", true);
         } else {
-            return "error";
+            json.put("status", false);
         }
+        return json.toString();
     }
 
-    @GetMapping("")
-    public String viewAll(Model model) {
-        if (session.getAttribute("logged") != null) {
-            model.addAttribute("users", (List<User>) userService.listAllUsers());
-            return "user/index";
+    @GetMapping("/email/{email}")
+    @ResponseBody
+    public String email(@PathVariable String email) {
+        System.out.println(email);
+        JSONObject json = new JSONObject();
+        if (userService.findEmail(email) != null) {
+            json.put("status", true);
         } else {
-            return "welcome";
+            json.put("status", false);
         }
+        return json.toString();
+    }
+
+    @GetMapping("/view")
+    @ResponseBody
+    public String viewAll() {
+        List<User> users = (List<User>) userService.listAllUsers();
+        System.out.println(session.getAttribute("logged"));
+        return arrayToJson(users);
     }
 
     @GetMapping("view/{id}")
-    public String viewUser(@PathVariable int id, Model model) {
-        if (session.getAttribute("logged") != null) {
-            model.addAttribute("user", (User) userService.find(id));
-            return "user/profile";
-        } else {
-            return "welcome";
-        }
+    @ResponseBody
+    public String viewUser(@PathVariable int id) {
+        return objectToJson(userService.find(id)).toString();
     }
 
-    @PostMapping("/login")
-    public String login(@ModelAttribute Login login, Model model) {
-        User user = userService.login(login.getEmail(), login.getPassword());
+    @PostMapping("login")
+    @ResponseBody
+    public String login(@RequestBody String login) {
+        JSONObject jsonLogin = new JSONObject(login);
+        String email = jsonLogin.get("email").toString();
+        String password = jsonLogin.get("password").toString();
+        User user = userService.login(email, password);
         if (user != null) {
-            model.addAttribute("user", user);
             session.setAttribute("logged", user.getId());
-            return "user/profile";
+            return objectToJson(user).put("status", "Valid").toString();
         } else {
             session.setAttribute("logged", null);
-            model.addAttribute("credentials", "invalid");
-            return "welcome";
+            return jsonLogin.put("status", "Invalid").toString();
         }
+
     }
 
     @GetMapping("logout")
-    public String logout() {
+    public void logout() {
+        System.out.println("logged Out");
         session.removeAttribute("logged");
-        return "welcome";
     }
 
     @GetMapping("search")
     @ResponseBody
     public String search(@RequestParam String search_query) {
-        JSONArray jsonArray = new JSONArray();
         List<User> users = userService.searchUsers(search_query);
+        return arrayToJson(users);
+    }
+
+    public String arrayToJson(List<User> users) {
+        JSONArray jsonArray = new JSONArray();
         for (User user : users) {
-            JSONObject json = new JSONObject();
-            json.put("id", user.getId());
-            json.put("firstname", user.getFirstname());
-            json.put("lastname", user.getLastname());
-            json.put("email", user.getEmail());
-            json.put("Address", user.getAddress());
-            jsonArray.put(json);
+            jsonArray.put(objectToJson(user));
         }
         return jsonArray.toString();
     }
 
+    public JSONObject objectToJson(User user) {
+        JSONObject json = new JSONObject();
+        json.put("id", user.getId());
+        json.put("firstname", user.getFirstname());
+        json.put("lastname", user.getLastname());
+        json.put("email", user.getEmail());
+        json.put("address", user.getAddress());
+        return json;
+    }
+
+    public User jsonToUser(JSONObject jsonUser) {
+        User user = new User();
+        user.setFirstname(jsonUser.getString("firstname"));
+        user.setLastname(jsonUser.getString("lastname"));
+        user.setEmail(jsonUser.getString("email"));
+        user.setAddress(jsonUser.getString("address"));
+        user.setPassword(jsonUser.getString("password"));
+        return user;
+
+    }
 }

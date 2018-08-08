@@ -20,8 +20,8 @@ public class UserService {
         return userDao.listAllUsers();
     }
 
-    public void addUser(User user) {
-        userDao.addUser(user);
+    public User addUser(User user) {
+        return userDao.addUser(user);
     }
 
     public void updateUser(User user) {
@@ -32,12 +32,16 @@ public class UserService {
         return userDao.deleteUser(id);
     }
 
+    public User findEmail(String email) {
+        return userDao.findUserByEmail(email);
+    }
+
     public User find(int id) {
         return userDao.findUserById(id);
     }
 
     public User login(String email,String password){
-       return userDao.validateUser(email,password);
+        return userDao.validateUser(email,password);
     }
 
     public List<User> searchUsers(String searchQuery){

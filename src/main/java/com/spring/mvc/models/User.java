@@ -17,6 +17,11 @@ public class User {
         this.id = id;
     }
 
+    public User(String email) {
+        super();
+        this.email = email;
+    }
+
     public int getId() {
         return id;
     }

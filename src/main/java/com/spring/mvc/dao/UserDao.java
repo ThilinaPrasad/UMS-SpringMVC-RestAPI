@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import sun.rmi.runtime.Log;
 
 import java.util.List;
 
@@ -45,11 +46,18 @@ public class UserDao {
         return list;
     }
 
-    public int addUser(User u){
-        String sql = "INSERT INTO users(firstname, lastname, address,email,password) VALUES(:firstname, :lastname, :address, :email,:password)";
-        u.setPassword(bCryptPasswordEncoder.encode(u.getPassword()));
-        //System.out.println(u.getPassword());
-        return namedParameterJdbcTemplate.update(sql,getSqlParameterByModel(u));
+    public User addUser(User u){
+        if(findUserByEmail(u.getEmail())!=null){
+            return new User("available");
+        }
+        else {
+            String sql = "INSERT INTO users(firstname, lastname, address,email,password) VALUES(:firstname, :lastname, :address, :email,:password)";
+            u.setPassword(bCryptPasswordEncoder.encode(u.getPassword()));
+            if (namedParameterJdbcTemplate.update(sql, getSqlParameterByModel(u)) == 1) {
+                return findUserByEmail(u.getEmail());
+            }
+            return null;
+        }
     }
 
     public int updateUser(User u){
@@ -65,6 +73,16 @@ public class UserDao {
     public User findUserById(int id){
         String sql = "SELECT * FROM users WHERE id = :id";
         return (User)namedParameterJdbcTemplate.queryForObject(sql,getSqlParameterByModel(new User(id)),new UserMapper());
+    }
+
+    public User findUserByEmail(String email) {
+        String sql = "SELECT * FROM users WHERE email = '"+email+"'";
+        List<User> list=namedParameterJdbcTemplate.query(sql,new UserMapper());
+        if(list.size()>0){
+            return list.get(0);
+        }else {
+            return null;
+        }
     }
 
     public User validateUser(String email,String password){
